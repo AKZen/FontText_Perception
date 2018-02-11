@@ -1,6 +1,7 @@
 #include "performancemetric.h"
 
 #include <QThread>
+#include <QDebug>
 
 double PerformanceMetric::normalize(double rawScore, double maxScale, double minScale) {
     if (rawScore < minScale) {
@@ -13,8 +14,8 @@ double PerformanceMetric::normalize(double rawScore, double maxScale, double min
 }
 
 PerformanceMetric::PerformanceMetric() {
-    EmoEngineEventHandle eEvent	= IEE_EmoEngineEventCreate();
-    EmoStateHandle eState = IEE_EmoStateCreate();
+    eEvent	= IEE_EmoEngineEventCreate();
+    eState = IEE_EmoStateCreate();
     unsigned int userID	= 0;
     int state  = 0;
 }
@@ -30,7 +31,7 @@ QString PerformanceMetric::run() {
 std::vector<double> PerformanceMetric::calculate() {
     std::vector<double> out;
     out.reserve(60000);
-    QThread::currentThread()->usleep(10000);
+    QThread::currentThread()->usleep(5000);
 
     for (int i = 0; i < 60000; i++) {
         state = IEE_EngineGetNextEvent(eEvent);
@@ -44,6 +45,7 @@ std::vector<double> PerformanceMetric::calculate() {
         }
         QThread::currentThread()->usleep(1);
     }
+    qDebug() << "IN THREAD " << out.size();
     return out;
 }
 

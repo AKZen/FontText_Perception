@@ -27,14 +27,10 @@ SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
     src/performancemetric.cpp \
-    # src/emoactionhandler.cpp
-
 
 HEADERS += \
     include/mainwindow.h \
-    include/emoactionhandler.h \
     include/performancemetric.h \
-    # include/emoactionhandler.h
 
 FORMS += \
     ui/mainwindow.ui
@@ -42,14 +38,13 @@ FORMS += \
 RESOURCES += \
     res/resource.qrc
 
-
 win32: LIBS += -L$$PWD/lib/win64/ -ledk
 
 INCLUDEPATH += $$PWD/include
 DEPENDPATH += $$PWD/include
 
 install_it.path = $$OUT_PWD
-install_it.files = $$PWD/bin/win64/*
+install_it.files = $$PWD/bin/win64/edk.dll
 
 INSTALLS += \
     install_it

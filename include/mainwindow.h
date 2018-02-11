@@ -25,6 +25,7 @@ private:
 
     QString name;
     int count;
+    size_t min_size;
 
     std::vector<double> CS;
     std::vector<double> TNR;
@@ -35,6 +36,8 @@ private slots:
     void on_b_start_clicked();
     void on_b_next_clicked();
     void on_b_connect_clicked();
+
+    void on_size_min_clicked();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

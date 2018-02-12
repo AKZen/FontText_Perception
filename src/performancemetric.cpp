@@ -31,7 +31,7 @@ QString PerformanceMetric::run() {
 std::vector<double> PerformanceMetric::calculate() {
     std::vector<double> out;
     out.reserve(60000);
-    QThread::currentThread()->usleep(5000);
+    QThread::currentThread()->usleep(10000);
 
     for (int i = 0; i < 60000; i++) {
         state = IEE_EngineGetNextEvent(eEvent);

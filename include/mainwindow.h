@@ -36,8 +36,7 @@ private slots:
     void on_b_start_clicked();
     void on_b_next_clicked();
     void on_b_connect_clicked();
-
-    void on_size_min_clicked();
+    void on_b_size_min_clicked();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

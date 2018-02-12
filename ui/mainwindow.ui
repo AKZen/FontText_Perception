@@ -75,7 +75,7 @@
      </rect>
     </property>
    </widget>
-   <widget class="QPushButton" name="size_min">
+   <widget class="QPushButton" name="b_size_min">
     <property name="geometry">
      <rect>
       <x>1120</x>

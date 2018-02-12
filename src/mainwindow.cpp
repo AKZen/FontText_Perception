@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     ui->b_start->hide();
     ui->b_next->hide();
-    ui->b_size_min->hide();
+    //ui->b_size_min->hide();
 }
 
 MainWindow::~MainWindow() {
@@ -57,7 +57,7 @@ void MainWindow::on_b_start_clicked()
     file.close();
 
     ui->b_start->hide();
-    ui->b_size_min->hide();
+    //ui->b_size_min->hide();
 
     watcher = new QFutureWatcher< std::vector<double> >;
     connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
@@ -85,7 +85,7 @@ void MainWindow::on_b_next_clicked() {
     connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
         TNR = watcher->future().result();
         ui->b_start->show();
-        ui->b_size_min->show();
+        //ui->b_size_min->show();
         print_csv();
     });
     watcher->setFuture(QtConcurrent::run(&PM, &PerformanceMetric::calculate));
@@ -98,11 +98,11 @@ void MainWindow::on_b_connect_clicked() {
     ui->b_start->show();
 }
 
-void MainWindow::on_size_min_clicked()
+void MainWindow::on_b_size_min_clicked()
 {
-    QFile file(QString("size");
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream ts(&file);
-    ts << min_size << endl;
-    file.close();
+    QFile f("size");
+    f.open(QIODevice::ReadWrite | QIODevice::Text);
+    QTextStream ts(&f);
+    ts << min_size;
+    f.close();
 }

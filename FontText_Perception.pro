@@ -35,8 +35,7 @@ HEADERS += \
 FORMS += \
     ui/mainwindow.ui
 
-RESOURCES += \
-    res/resource.qrc
+RESOURCES +=
 
 win32: LIBS += -L$$PWD/lib/win64/ -ledk
 

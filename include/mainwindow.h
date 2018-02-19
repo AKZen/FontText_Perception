@@ -31,6 +31,9 @@ private:
     std::vector<double> TNR;
 
     void print_csv();
+    void connect();
+    void start();
+    void next();
 
 
     size_t text_num;
@@ -41,9 +44,11 @@ private:
     };
 
 private slots:
+    /*
     void on_b_start_clicked();
     void on_b_next_clicked();
     void on_b_connect_clicked();
+    */
 
     void on_action_button_clicked();
 

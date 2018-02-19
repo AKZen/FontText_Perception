@@ -21,34 +21,26 @@ private:
 
     performance_metric measurement;
 
-    QString csv;
-
-    QString name;
     int count;
     size_t min_size;
 
     std::vector<double> comic_sans_metric;
     std::vector<double> times_new_roman_metric;
 
-    void print_csv();
     void action_connect();
     void action_start();
     void action_next();
+    void print_csv();
+    void read_text(QString filename, QString font, int size);
 
     size_t text_num;
-    enum act {
+    enum actions {
         CONNECT,
-        RULES,
+        START,
         NEXT
-    } actions;
+    } act;
 
 private slots:
-    /*
-    void on_b_start_clicked();
-    void on_b_next_clicked();
-    void on_b_connect_clicked();
-    */
-
     void on_action_button_clicked();
 
 public:

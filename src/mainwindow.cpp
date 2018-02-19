@@ -18,12 +18,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     min_size = 0;
 
     text_num = 0;
-    actions = CONNECT;
-
-    /*
-    ui->b_start->hide();
-    ui->b_next->hide();
-    */
+    act = CONNECT;
 }
 
 MainWindow::~MainWindow() {
@@ -34,6 +29,55 @@ MainWindow::~MainWindow() {
     f.close();
 
     delete ui;
+}
+
+void MainWindow::action_connect() {
+    ui->text_browser->setText(measurement.run());
+}
+
+void MainWindow::action_start() {
+    read_text("text_1", "Comic Sans MS", 14);
+    count++;
+
+    watcher = new QFutureWatcher< std::vector<double> >;
+    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
+        comic_sans_metric = watcher->future().result();
+        if (count == 1) {
+            min_size = comic_sans_metric.size();
+        }
+    });
+    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
+}
+
+void MainWindow::action_next() {
+    read_text("text_2", "Times new roman", 14);
+
+    watcher = new QFutureWatcher< std::vector<double> >;
+    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
+        times_new_roman_metric = watcher->future().result();
+        print_csv();
+    });
+    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
+}
+
+void MainWindow::on_action_button_clicked() {
+    switch (act) {
+        case CONNECT:
+            action_connect();
+
+            act = START;
+            break;
+        case START:
+            action_start();
+
+            act = NEXT;
+            break;
+        case NEXT:
+            action_next();
+
+            act = START;
+            break;
+    }
 }
 
 void MainWindow::print_csv() {
@@ -53,125 +97,12 @@ void MainWindow::print_csv() {
     file.close();
 }
 
-/*
-
-void MainWindow::on_b_start_clicked() {
-    count++;
-    QFile file("text_1");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    auto tmp = QString(file.readAll());
-
-    QFont f("Comic Sans MS", 14);
+void MainWindow::read_text(QString filename, QString font, int size) {
+    QFile in(filename);
+    in.open(QIODevice::ReadOnly | QIODevice::Text);
+    auto text = QString(in.readAll());
+    QFont f(font, size);
     ui->text_browser->setFont(f);
-    ui->text_browser->setText(tmp);
-    file.close();
-
-    ui->b_start->hide();
-
-    watcher = new QFutureWatcher< std::vector<double> >;
-    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        CS = watcher->future().result();
-        ui->b_next->show();
-        if (count == 1) {
-            min_size = CS.size();
-        }
-    });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
-}
-
-void MainWindow::on_b_next_clicked() {
-    QFile file("text_2");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    auto tmp = QString(file.readAll());
-    QFont f("Times new roman", 14);
-    ui->text_browser->setFont(f);
-    ui->text_browser->setText(tmp);
-    file.close();
-
-    ui->b_next->hide();
-
-    watcher = new QFutureWatcher< std::vector<double> >;
-    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        TNR = watcher->future().result();
-        ui->b_start->show();
-        print_csv();
-    });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
-}
-
-void MainWindow::on_b_connect_clicked() {
-    ui->text_browser->setText(measurement.run());
-
-    ui->b_connect->hide();
-    ui->b_start->show();
-}
-
-*/
-
-void MainWindow::action_connect() {
-    ui->text_browser->setText(measurement.run());
-}
-
-void MainWindow::action_start() {
-    count++;
-    QFile file("text_1");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    auto tmp = QString(file.readAll());
-
-    QFont f("Comic Sans MS", 14);
-    ui->text_browser->setFont(f);
-    ui->text_browser->setText(tmp);
-    file.close();
-
-    //ui->b_start->hide();
-
-    watcher = new QFutureWatcher< std::vector<double> >;
-    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        comic_sans_metric = watcher->future().result();
-        //ui->b_next->show();
-        if (count == 1) {
-            min_size = comic_sans_metric.size();
-        }
-    });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
-}
-
-void MainWindow::action_next() {
-    QFile file("text_2");
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    auto tmp = QString(file.readAll());
-    QFont f("Times new roman", 14);
-    ui->text_browser->setFont(f);
-    ui->text_browser->setText(tmp);
-    file.close();
-
-    //ui->b_next->hide();
-
-    watcher = new QFutureWatcher< std::vector<double> >;
-    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        times_new_roman_metric = watcher->future().result();
-        //ui->b_start->show();
-        print_csv();
-    });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
-}
-
-void MainWindow::on_action_button_clicked() {
-    switch (actions) {
-        case CONNECT:
-            action_connect();
-
-            actions = RULES;
-            break;
-        case RULES:
-            action_start();
-
-            actions = NEXT;
-            break;
-        case NEXT:
-            action_next();
-
-            actions = RULES;
-            break;
-    }
+    ui->text_browser->setText(text);
+    in.close();
 }

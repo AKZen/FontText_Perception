@@ -14,57 +14,6 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="b_start">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>600</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="text">
-     <string>START</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="b_next">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>600</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="text">
-     <string>NEXT</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="b_connect">
-    <property name="geometry">
-     <rect>
-      <x>1210</x>
-      <y>600</y>
-      <width>80</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="cursor">
-     <cursorShape>PointingHandCursor</cursorShape>
-    </property>
-    <property name="text">
-     <string>CONNECT</string>
-    </property>
-   </widget>
    <widget class="QTextBrowser" name="text_browser">
     <property name="geometry">
      <rect>
@@ -78,7 +27,7 @@
    <widget class="QPushButton" name="action_button">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>600</x>
       <y>600</y>
       <width>80</width>
       <height>21</height>

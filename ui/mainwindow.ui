@@ -27,14 +27,14 @@
    <widget class="QPushButton" name="action_button">
     <property name="geometry">
      <rect>
-      <x>600</x>
+      <x>610</x>
       <y>600</y>
       <width>80</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Action</string>
+     <string>Connect</string>
     </property>
    </widget>
   </widget>

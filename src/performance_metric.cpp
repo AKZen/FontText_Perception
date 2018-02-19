@@ -34,12 +34,12 @@ double performance_metric::normalize(double rawScore, double maxScale, double mi
     }
 }
 
-std::vector<double> performance_metric::calculate() {
+std::vector<double> performance_metric::get_emo_states() {
     std::vector<double> out;
     out.reserve(60000);
-    QThread::currentThread()->usleep(10000);
+    QThread::currentThread()->usleep(1000);
 
-    for (int i = 0; i < 60000; i++) {
+    for (int i = 0; i < 6000; i++) {
         state = IEE_EngineGetNextEvent(eEvent);
         if (state == EDK_OK) {
             IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);

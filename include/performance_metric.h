@@ -31,7 +31,7 @@ public:
     ~performance_metric();
 
     QString run();
-    std::vector<double> calculate();
+    std::vector<double> get_emo_states();
 };
 
 #endif // PERFORMANCEMETRIC_H

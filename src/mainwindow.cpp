@@ -7,57 +7,65 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
 
-    QFile file("intro");
-    qDebug() << "HHHHHH";
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    auto tmp = QString(file.readAll());
-    ui->text_browser->setText(tmp);
-    file.close();
+    read_text("intro", "Arial", 14);
 
-    count = 0;
+    user_count = 0;
     min_size = 0;
-
     text_num = 0;
     act = CONNECT;
 }
 
 MainWindow::~MainWindow() {
-    QFile f("size");
-    f.open(QIODevice::ReadWrite | QIODevice::Text);
-    QTextStream ts(&f);
-    ts << min_size;
-    f.close();
+    QFile out_size("size");
+    out_size.open(QIODevice::ReadWrite | QIODevice::Text);
+    QTextStream text_stream(&out_size);
+    text_stream << min_size;
+    out_size.close();
 
     delete ui;
 }
 
 void MainWindow::action_connect() {
     ui->text_browser->setText(measurement.run());
+
+    instructions();
+}
+
+void MainWindow::instructions()
+{
+    read_text("instructions", "Arial", 14);
+    ui->action_button->setText("Start");
 }
 
 void MainWindow::action_start() {
     read_text("text_1", "Comic Sans MS", 14);
-    count++;
+    ui->action_button->hide();
+    user_count++;
 
     watcher = new QFutureWatcher< std::vector<double> >;
     connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
         comic_sans_metric = watcher->future().result();
-        if (count == 1) {
+        if (user_count == 1) {
             min_size = comic_sans_metric.size();
         }
+        ui->action_button->setText("Next");
+        ui->action_button->show();
     });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
+    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
 }
 
 void MainWindow::action_next() {
     read_text("text_2", "Times new roman", 14);
+    ui->action_button->hide();
 
     watcher = new QFutureWatcher< std::vector<double> >;
     connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
         times_new_roman_metric = watcher->future().result();
         print_csv();
+        ui->action_button->setText("Finish");
+        ui->action_button->show();
     });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
+    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
 }
 
 void MainWindow::on_action_button_clicked() {
@@ -75,15 +83,20 @@ void MainWindow::on_action_button_clicked() {
         case NEXT:
             action_next();
 
+            act = END;
+            break;
+        case END:
+            instructions();
+
             act = START;
             break;
     }
 }
 
 void MainWindow::print_csv() {
-    QFile file(QString("%1.csv").arg(count));
-    file.open(QIODevice::WriteOnly | QIODevice::Text);
-    QTextStream ts(&file);
+    QFile out_csv(QString("%1.csv").arg(user_count));
+    out_csv.open(QIODevice::WriteOnly | QIODevice::Text);
+    QTextStream text_stream(&out_csv);
     if (min_size > comic_sans_metric.size()) {
         min_size = comic_sans_metric.size();
     }
@@ -92,9 +105,9 @@ void MainWindow::print_csv() {
     }
     qDebug() << comic_sans_metric.size() << "   " <<  times_new_roman_metric.size();
     for (int i = 0; i < comic_sans_metric.size() && i < times_new_roman_metric.size(); i++) {
-        ts << comic_sans_metric[i] << ',' << times_new_roman_metric[i] << "\n";
+        text_stream << comic_sans_metric[i] << ',' << times_new_roman_metric[i] << "\n";
     }
-    file.close();
+    out_csv.close();
 }
 
 void MainWindow::read_text(QString filename, QString font, int size) {

@@ -1,8 +1,7 @@
-Hello!
-This is our project for getting statistic of reading different fonts.
+Привет!
+Перед тобой программа, которая получает статистику чтения текство с разыми шрифтами.
+Она является частью проектной работы "Разработка программного обеспечения для обработки сигналов нейроинтерфеса", которую выполняют Альхимович М.В. и Коптуров Д.А.
 
-Instruction:
-1. push "connect" button;
-2. push "start" button and read text for 60 seconds;
-3. push "next" button and read another text with different font.
-4. WELL DONE. next please)
+Сейчас тебе стоит подключиться к шлему, нажав кнопку "Connect".
+Дальнейшие инструкции будут выдаваться по ходу работы.
+Желаем удачи

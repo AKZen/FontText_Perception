@@ -21,23 +21,24 @@ private:
 
     performance_metric measurement;
 
-    int count;
-    size_t min_size;
-
     std::vector<double> comic_sans_metric;
     std::vector<double> times_new_roman_metric;
 
     void action_connect();
+    void instructions();
     void action_start();
     void action_next();
     void print_csv();
     void read_text(QString filename, QString font, int size);
 
+    size_t user_count;
+    size_t min_size;
     size_t text_num;
     enum actions {
         CONNECT,
         START,
-        NEXT
+        NEXT,
+        END
     } act;
 
 private slots:

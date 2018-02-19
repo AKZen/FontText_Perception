@@ -27,21 +27,20 @@ private:
     int count;
     size_t min_size;
 
-    std::vector<double> CS;
-    std::vector<double> TNR;
+    std::vector<double> comic_sans_metric;
+    std::vector<double> times_new_roman_metric;
 
     void print_csv();
-    void connect();
-    void start();
-    void next();
-
+    void action_connect();
+    void action_start();
+    void action_next();
 
     size_t text_num;
     enum act {
         CONNECT,
         RULES,
         NEXT
-    };
+    } actions;
 
 private slots:
     /*

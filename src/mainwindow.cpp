@@ -18,10 +18,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     min_size = 0;
 
     text_num = 0;
-    act = CONNECT;
+    actions = CONNECT;
 
+    /*
     ui->b_start->hide();
     ui->b_next->hide();
+    */
 }
 
 MainWindow::~MainWindow() {
@@ -38,15 +40,15 @@ void MainWindow::print_csv() {
     QFile file(QString("%1.csv").arg(count));
     file.open(QIODevice::WriteOnly | QIODevice::Text);
     QTextStream ts(&file);
-    if (min_size > CS.size()) {
-        min_size = CS.size();
+    if (min_size > comic_sans_metric.size()) {
+        min_size = comic_sans_metric.size();
     }
-    if (min_size > TNR.size()) {
-        min_size = TNR.size();
+    if (min_size > times_new_roman_metric.size()) {
+        min_size = times_new_roman_metric.size();
     }
-    qDebug() << CS.size() << "   " <<  TNR.size();
-    for (int i = 0; i < CS.size() && i < TNR.size(); i++) {
-        ts << CS[i] << ',' << TNR[i] << "\n";
+    qDebug() << comic_sans_metric.size() << "   " <<  times_new_roman_metric.size();
+    for (int i = 0; i < comic_sans_metric.size() && i < times_new_roman_metric.size(); i++) {
+        ts << comic_sans_metric[i] << ',' << times_new_roman_metric[i] << "\n";
     }
     file.close();
 }
@@ -106,11 +108,11 @@ void MainWindow::on_b_connect_clicked() {
 
 */
 
-void MainWindow::connect() {
+void MainWindow::action_connect() {
     ui->text_browser->setText(measurement.run());
 }
 
-void MainWindow::start() {
+void MainWindow::action_start() {
     count++;
     QFile file("text_1");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
@@ -121,20 +123,20 @@ void MainWindow::start() {
     ui->text_browser->setText(tmp);
     file.close();
 
-    ui->b_start->hide();
+    //ui->b_start->hide();
 
     watcher = new QFutureWatcher< std::vector<double> >;
     connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        CS = watcher->future().result();
-        ui->b_next->show();
+        comic_sans_metric = watcher->future().result();
+        //ui->b_next->show();
         if (count == 1) {
-            min_size = CS.size();
+            min_size = comic_sans_metric.size();
         }
     });
     watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
 }
 
-void MainWindow::next() {
+void MainWindow::action_next() {
     QFile file("text_2");
     file.open(QIODevice::ReadOnly | QIODevice::Text);
     auto tmp = QString(file.readAll());
@@ -143,33 +145,33 @@ void MainWindow::next() {
     ui->text_browser->setText(tmp);
     file.close();
 
-    ui->b_next->hide();
+    //ui->b_next->hide();
 
     watcher = new QFutureWatcher< std::vector<double> >;
     connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        TNR = watcher->future().result();
-        ui->b_start->show();
+        times_new_roman_metric = watcher->future().result();
+        //ui->b_start->show();
         print_csv();
     });
     watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::calculate));
 }
 
 void MainWindow::on_action_button_clicked() {
-    switch (act) {
+    switch (actions) {
         case CONNECT:
-            connect();
+            action_connect();
 
-            act = RULES;
+            actions = RULES;
             break;
         case RULES:
-            start();
+            action_start();
 
-            act = NEXT;
+            actions = NEXT;
             break;
         case NEXT:
-            next();
+            action_next();
 
-            act = RULES;
+            actions = RULES;
             break;
     }
 }

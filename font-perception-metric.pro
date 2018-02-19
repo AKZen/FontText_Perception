@@ -8,7 +8,7 @@ QT       += core gui concurrent
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-TARGET = FontText_Perception
+TARGET = font-perception-metric
 TEMPLATE = app
 
 # The following define makes your compiler emit warnings if you use
@@ -26,11 +26,11 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/main.cpp \
     src/mainwindow.cpp \
-    src/performancemetric.cpp \
+    src/performance_metric.cpp
 
 HEADERS += \
     include/mainwindow.h \
-    include/performancemetric.h \
+    include/performance_metric.h
 
 FORMS += \
     ui/mainwindow.ui

@@ -1,9 +1,30 @@
-#include "performancemetric.h"
+#include "performance_metric.h"
 
 #include <QThread>
 #include <QDebug>
 
-double PerformanceMetric::normalize(double rawScore, double maxScale, double minScale) {
+performance_metric::performance_metric() {
+    eEvent	= IEE_EmoEngineEventCreate();
+    eState = IEE_EmoStateCreate();
+    unsigned int userID	= 0;
+    int state  = 0;
+}
+
+performance_metric::~performance_metric() {
+    //IEE_EngineDisconnect();
+    IEE_EmoStateFree(eState);
+    IEE_EmoEngineEventFree(eEvent);
+}
+
+QString performance_metric::run() {
+    if (IEE_EngineConnect() == EDK_OK) {
+        return "connection OK";
+    } else {
+        return "connection FALLED";
+    }
+}
+
+double performance_metric::normalize(double rawScore, double maxScale, double minScale) {
     if (rawScore < minScale) {
         return 0;
     } else if (rawScore > maxScale)	{
@@ -13,22 +34,7 @@ double PerformanceMetric::normalize(double rawScore, double maxScale, double min
     }
 }
 
-PerformanceMetric::PerformanceMetric() {
-    eEvent	= IEE_EmoEngineEventCreate();
-    eState = IEE_EmoStateCreate();
-    unsigned int userID	= 0;
-    int state  = 0;
-}
-
-QString PerformanceMetric::run() {
-    if (IEE_EngineConnect() == EDK_OK) {
-        return "connection OK";
-    } else {
-        return "connection FALLED";
-    }
-}
-
-std::vector<double> PerformanceMetric::calculate() {
+std::vector<double> performance_metric::calculate() {
     std::vector<double> out;
     out.reserve(60000);
     QThread::currentThread()->usleep(10000);
@@ -49,7 +55,7 @@ std::vector<double> PerformanceMetric::calculate() {
     return out;
 }
 
-double PerformanceMetric::mini_log(double rawScore, double maxScale, double minScale) {
+double performance_metric::mini_log(double rawScore, double maxScale, double minScale) {
     if (minScale == maxScale) {
         return -1;
     } else {
@@ -57,7 +63,7 @@ double PerformanceMetric::mini_log(double rawScore, double maxScale, double minS
     }
 }
 
-double PerformanceMetric::log_data(EmoStateHandle eState) {
+double performance_metric::log_data(EmoStateHandle eState) {
     double rawScore = 0;
     double minScale = 0;
     double maxScale = 0;

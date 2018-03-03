@@ -18,7 +18,17 @@ performance_metric::~performance_metric() {
 
 QString performance_metric::run() {
     if (IEE_EngineConnect() == EDK_OK) {
-        return "connection OK";
+        while (true) {
+            int state = IEE_EngineGetNextEvent(eEvent);
+            if (state == EDK_OK) {
+                IEE_Event_t eventType = IEE_EmoEngineEventGetType(eEvent);
+                IEE_EmoEngineEventGetUserId(eEvent, &userID);
+                if (eventType == IEE_UserAdded) {
+                    return "connection OK";
+                }
+            }
+            QThread::currentThread()->usleep(1);
+        }
     } else {
         return "connection FALLED";
     }

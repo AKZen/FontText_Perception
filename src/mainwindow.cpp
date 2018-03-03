@@ -56,6 +56,7 @@ void MainWindow::action_start() {
         }
         ui->action_button->setText("Next");
         ui->action_button->show();
+        qDebug() << "Text 1 complete";
         disconnect(&watcher, &QFutureWatcher<std::vector<double>>::finished, nullptr, nullptr);
     });
     watcher.setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
@@ -70,6 +71,7 @@ void MainWindow::action_next() {
         print_csv();
         ui->action_button->setText("Finish");
         ui->action_button->show();
+        qDebug() << "Text 2 complete";
         disconnect(&watcher, &QFutureWatcher<std::vector<double>>::finished, nullptr, nullptr);
     });
     watcher.setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));

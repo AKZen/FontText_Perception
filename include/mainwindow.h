@@ -17,7 +17,8 @@ private:
     Ui::MainWindow *ui;
 
     // QFuture< std::vector<double> > future;
-    QFutureWatcher<std::vector<double>>* watcher;
+    QFutureWatcher<QString> user_watcher;
+    QFutureWatcher<std::vector<double>> watcher;
 
     performance_metric measurement;
 

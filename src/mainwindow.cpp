@@ -3,6 +3,7 @@
 #include <QFile>
 #include <QTimer>
 #include <QDebug>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWindow) {
     ui->setupUi(this);
@@ -26,13 +27,19 @@ MainWindow::~MainWindow() {
 }
 
 void MainWindow::action_connect() {
-    ui->text_browser->setText(measurement.run());
-
-    instructions();
+    ui->text_browser->setText("Ожидание пользователя...");
+    connect(&user_watcher, &QFutureWatcher<QString>::finished, this, [&](){
+        ui->text_browser->setText(user_watcher.future().result());
+        instructions();
+        qDebug() << "User connected";
+        disconnect(&watcher, &QFutureWatcher<std::vector<double>>::finished, nullptr, nullptr);
+        // todo
+        // use this watcher to check whether user still connected
+    });
+    user_watcher.setFuture(QtConcurrent::run(&measurement, &performance_metric::run));
 }
 
-void MainWindow::instructions()
-{
+void MainWindow::instructions() {
     read_text("instructions", "Arial", 14);
     ui->action_button->setText("Start");
 }
@@ -42,30 +49,30 @@ void MainWindow::action_start() {
     ui->action_button->hide();
     user_count++;
 
-    watcher = new QFutureWatcher< std::vector<double> >;
-    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        comic_sans_metric = watcher->future().result();
+    connect(&watcher, &QFutureWatcher<std::vector<double>>::finished, this, [&](){
+        comic_sans_metric = watcher.future().result();
         if (user_count == 1) {
             min_size = comic_sans_metric.size();
         }
         ui->action_button->setText("Next");
         ui->action_button->show();
+        disconnect(&watcher, &QFutureWatcher<std::vector<double>>::finished, nullptr, nullptr);
     });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
+    watcher.setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
 }
 
 void MainWindow::action_next() {
     read_text("text_2", "Times new roman", 14);
     ui->action_button->hide();
 
-    watcher = new QFutureWatcher< std::vector<double> >;
-    connect(watcher, &QFutureWatcher<void>::finished, this, [&](){
-        times_new_roman_metric = watcher->future().result();
+    connect(&watcher, &QFutureWatcher<std::vector<double>>::finished, this, [&](){
+        times_new_roman_metric = watcher.future().result();
         print_csv();
         ui->action_button->setText("Finish");
         ui->action_button->show();
+        disconnect(&watcher, &QFutureWatcher<std::vector<double>>::finished, nullptr, nullptr);
     });
-    watcher->setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
+    watcher.setFuture(QtConcurrent::run(&measurement, &performance_metric::get_emo_states));
 }
 
 void MainWindow::on_action_button_clicked() {
